@@ -1,4 +1,4 @@
-const BASE_URL = "http://localhost:8000";
+const BASE_URL = "https://eduinsight-ai-g31k.onrender.com";
 
 export async function uploadResult(file) {
   const formData = new FormData();
