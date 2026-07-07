@@ -1,30 +1,48 @@
+const fs = require("fs");
 const { extractPdfText } = require("../services/pdfService");
 const { analyzeResult } = require("../services/geminiService");
 
 async function uploadResult(req, res) {
-  console.log("Upload controller reached");
   try {
+    console.log("========== UPLOAD REQUEST ==========");
+
+    console.log("req.file:", req.file);
+
+    if (!req.file) {
+      return res.status(400).json({
+        success: false,
+        message: "No PDF file received.",
+      });
+    }
+
+    console.log("File Path:", req.file.path);
+    console.log("File Exists:", fs.existsSync(req.file.path));
+
     // Extract text from PDF
     const pdfText = await extractPdfText(req.file.path);
 
-    // Send extracted text to ChatGPT
+    console.log("PDF Extracted Successfully");
+    console.log("Extracted Characters:", pdfText.length);
+
+    // Analyze with Gemini
     const aiReport = await analyzeResult(pdfText);
 
-    // Return AI report to frontend
-    res.json({
+    console.log("Gemini Analysis Completed");
 
+    return res.json({
       success: true,
-
-      analysis: aiReport
-
+      analysis: aiReport,
     });
 
   } catch (err) {
+    console.error("========== ERROR ==========");
     console.error(err);
+    console.error(err.stack);
 
-    res.status(500).json({
+    return res.status(500).json({
       success: false,
       message: err.message,
+      stack: err.stack,
     });
   }
 }
