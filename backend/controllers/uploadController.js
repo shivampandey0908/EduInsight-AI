@@ -2,6 +2,7 @@ const { extractPdfText } = require("../services/pdfService");
 const { analyzeResult } = require("../services/geminiService");
 
 async function uploadResult(req, res) {
+  console.log("Upload controller reached");
   try {
     // Extract text from PDF
     const pdfText = await extractPdfText(req.file.path);
@@ -12,11 +13,11 @@ async function uploadResult(req, res) {
     // Return AI report to frontend
     res.json({
 
-success:true,
+      success: true,
 
-analysis:aiReport
+      analysis: aiReport
 
-});
+    });
 
   } catch (err) {
     console.error(err);
